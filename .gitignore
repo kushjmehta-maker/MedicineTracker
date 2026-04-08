@@ -1,0 +1,33 @@
+# Node
+node_modules/
+.npm
+
+# React Native
+*.jsbundle
+.expo/
+android/app/build/
+android/.gradle/
+ios/Pods/
+ios/build/
+ios/DerivedData/
+
+# Firebase credentials — NEVER commit these
+google-services.json
+GoogleService-Info.plist
+**/firebase-adminsdk*.json
+backend/.env
+backend/.env.local
+backend/.env.production
+
+# Build artifacts
+backend/dist/
+coverage/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp

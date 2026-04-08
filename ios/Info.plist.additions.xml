@@ -1,0 +1,39 @@
+<!--
+  Info.plist additions for MedicineTracker iOS
+
+  After running `npx react-native run-ios` (which generates the Xcode project),
+  add these keys to ios/MedicineTracker/Info.plist:
+
+  1. User-facing permission descriptions (required for App Store review):
+-->
+
+<key>NSUserNotificationsUsageDescription</key>
+<string>MediTrack uses notifications to remind you to take your medicines on time.</string>
+
+<!--
+  2. Background modes — add these under UIBackgroundModes array:
+    • fetch        (for background data sync)
+    • remote-notification (for push)
+-->
+<key>UIBackgroundModes</key>
+<array>
+  <string>fetch</string>
+  <string>remote-notification</string>
+</array>
+
+<!--
+  3. App Transport Security — allow cleartext only in development.
+     In production (NODE_ENV=production) backend uses HTTPS, so this is dev-only.
+-->
+<key>NSAppTransportSecurity</key>
+<dict>
+  <key>NSAllowsArbitraryLoads</key>
+  <true/>   <!-- Remove before App Store submission; use NSExceptionDomains instead -->
+</dict>
+
+<!--
+  4. Firebase — GoogleService-Info.plist
+     Download from Firebase console → Project settings → iOS app
+     and place at: ios/MedicineTracker/GoogleService-Info.plist
+     (This file must NOT be committed to git)
+-->
