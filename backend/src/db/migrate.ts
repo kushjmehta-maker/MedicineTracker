@@ -12,12 +12,13 @@
  * superseded by the production schema.
  */
 
+import 'dotenv/config';
 import fs from 'fs';
 import path from 'path';
 import { getPool, closePool } from './client';
 
 // Canonical schema lives at <repo-root>/database/migrations/
-const MIGRATIONS_DIR = path.resolve(__dirname, '../../../../database/migrations');
+const MIGRATIONS_DIR = path.resolve(__dirname, '../../../database/migrations');
 
 async function run(): Promise<void> {
   const pool = getPool();

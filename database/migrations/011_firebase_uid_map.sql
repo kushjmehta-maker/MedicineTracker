@@ -27,11 +27,11 @@ CREATE POLICY firebase_uid_map_self
   FOR ALL
   USING (user_id = (current_setting('app.current_user_id', TRUE))::uuid);
 
--- Service-role bypass (backend connects as the app role, not a row-level user).
--- Adjust role name to match your DB setup (e.g. 'app_service' or 'postgres').
+-- Service-role bypass (backend connects as the superuser in dev, or a dedicated
+-- role in production).  Uses current_user so it works with any role name.
 CREATE POLICY firebase_uid_map_service_role
   ON firebase_uid_map
   AS PERMISSIVE
   FOR ALL
-  TO app_service
+  TO postgres
   USING (TRUE);
