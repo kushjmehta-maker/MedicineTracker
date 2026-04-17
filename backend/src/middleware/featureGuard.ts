@@ -22,7 +22,7 @@ import { logger } from '../observability/logger';
 // =============================================================================
 
 export interface AuthenticatedRequest extends FastifyRequest {
-  user?: { id: string };
+  user?: { id: string; phone: string };
 }
 
 /**

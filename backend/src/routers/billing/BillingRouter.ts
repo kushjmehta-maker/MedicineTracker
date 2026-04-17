@@ -101,7 +101,7 @@ export async function registerBillingRoutes(app: FastifyInstance): Promise<void>
   app.post(
     '/v1/billing/webhook/:provider',
     {
-      config: { rawBody: true },  // requires @fastify/rawbody plugin
+      config: { rawBody: true } as Record<string, unknown>,  // requires @fastify/rawbody plugin
     },
     async (request: FastifyRequest, reply: FastifyReply) => {
       const providerParam = PROVIDER_PARAM_SCHEMA.safeParse(

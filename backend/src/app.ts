@@ -48,7 +48,7 @@ export async function buildApp(): Promise<FastifyInstance> {
   app.addHook('preHandler', authMiddleware);
 
   // ── Global error handler ──────────────────────────────────────────────────
-  app.setErrorHandler((error, request, reply) => {
+  app.setErrorHandler((error: Error & { statusCode?: number }, request, reply) => {
     logger.error({ err: error, url: request.url }, 'Unhandled error');
     reply.status(error.statusCode ?? 500).send({
       error: error.message ?? 'Internal server error',

@@ -9,7 +9,10 @@ import { useAuthStore } from '../store/authStore';
 //   • Throws ApiError with the server's error message on non-2xx
 // =============================================================================
 
-const BASE_URL = (process.env.API_BASE_URL ?? 'http://localhost:3000').replace(/\/$/, '');
+const BASE_URL = (__DEV__
+  ? 'http://localhost:3000'
+  : 'https://medicine-tracker-api-production.up.railway.app'
+).replace(/\/$/, '');
 
 export class ApiError extends Error {
   constructor(
