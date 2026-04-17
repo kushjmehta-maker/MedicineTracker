@@ -12,6 +12,11 @@ jest.mock('../src/services/notificationStrategy/NotificationStrategyService', ()
   getStrategyForUser: jest.fn(),
 }));
 
+// Mock auth middleware to skip authentication in tests
+jest.mock('../src/middleware/authMiddleware', () => ({
+  authMiddleware: jest.fn(async () => {}),
+}));
+
 // Mock prom-client to avoid port conflicts between test suites
 jest.mock('prom-client', () => {
   const actual = jest.requireActual('prom-client');

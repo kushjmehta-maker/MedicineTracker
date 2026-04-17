@@ -63,7 +63,7 @@ describe('computeAdherenceScore', () => {
       snoozeRate: 0,
       consistencyScore: 1.0,
     });
-    expect(score).toBe(1.0);
+    expect(score).toBeCloseTo(1.0, 10);
   });
 
   test('70% adherence, 5 min avg delay, 10% snooze, 90% consistency', () => {

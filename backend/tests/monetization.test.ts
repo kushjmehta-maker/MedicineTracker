@@ -50,6 +50,12 @@ jest.mock('prom-client', () => {
   };
 });
 
+// ─── Mock auth middleware ─────────────────────────────────────────────────────
+
+jest.mock('../src/middleware/authMiddleware', () => ({
+  authMiddleware: jest.fn(async () => {}),
+}));
+
 import {
   getUserPlan,
   isPremium,
@@ -71,7 +77,7 @@ import {
 } from '../src/services/monetization/UsageLimitService';
 import { FeatureGateError, UsageLimitError } from '../src/services/monetization/types';
 import { buildApp } from '../src/app';
-import { FastifyInstance } from 'fastify';
+import { FastifyInstance, FastifyRequest } from 'fastify';
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -142,6 +148,7 @@ const FULL_LIMIT_MATRIX = {
 
 beforeEach(() => {
   jest.clearAllMocks();
+  mockQuery.mockReset();
   _resetSubscriptionCache();
   mockGetFeatureMatrix.mockResolvedValue(FULL_FEATURE_MATRIX);
   mockGetLimitMatrix.mockResolvedValue(FULL_LIMIT_MATRIX);
@@ -357,22 +364,22 @@ describe('UsageLimitService', () => {
   describe('checkLimit', () => {
     test('FREE user at 9/10 medicines → within limit', async () => {
       mockQuery
-        .mockResolvedValueOnce({ rows: [] })             // getActiveSubscription → FREE
-        .mockResolvedValueOnce({ rows: [{ current_value: 9 }] }); // getUsage
+        .mockResolvedValueOnce({ rows: [{ current_value: 9 }] }) // getUsage
+        .mockResolvedValueOnce({ rows: [] });                     // getUserPlan → FREE
       expect(await checkLimit(FREE_UUID, 'medicines_count')).toBe(true);
     });
 
     test('FREE user at 10/10 medicines → at limit', async () => {
       mockQuery
-        .mockResolvedValueOnce({ rows: [] })
-        .mockResolvedValueOnce({ rows: [{ current_value: 10 }] });
+        .mockResolvedValueOnce({ rows: [{ current_value: 10 }] }) // getUsage
+        .mockResolvedValueOnce({ rows: [] });                      // getUserPlan → FREE
       expect(await checkLimit(FREE_UUID, 'medicines_count')).toBe(false);
     });
 
     test('PREMIUM user with null limit → always within limit', async () => {
       mockQuery
-        .mockResolvedValueOnce({ rows: [makeActiveSub('PREMIUM')] })
-        .mockResolvedValueOnce({ rows: [{ current_value: 500 }] });
+        .mockResolvedValueOnce({ rows: [{ current_value: 500 }] })      // getUsage
+        .mockResolvedValueOnce({ rows: [makeActiveSub('PREMIUM')] });   // getUserPlan → PREMIUM
       expect(await checkLimit(PREMIUM_UUID, 'medicines_count')).toBe(true);
     });
   });
@@ -380,15 +387,15 @@ describe('UsageLimitService', () => {
   describe('assertLimit', () => {
     test('does not throw when under limit', async () => {
       mockQuery
-        .mockResolvedValueOnce({ rows: [] })
-        .mockResolvedValueOnce({ rows: [{ current_value: 5 }] });
+        .mockResolvedValueOnce({ rows: [{ current_value: 5 }] }) // getUsage
+        .mockResolvedValueOnce({ rows: [] });                      // getUserPlan → FREE
       await expect(assertLimit(FREE_UUID, 'medicines_count')).resolves.toBeUndefined();
     });
 
     test('throws UsageLimitError (429) when at limit', async () => {
       mockQuery
-        .mockResolvedValueOnce({ rows: [] })    // getPlanLimit → getUserPlan
-        .mockResolvedValueOnce({ rows: [{ current_value: 10 }] }); // getUsage
+        .mockResolvedValueOnce({ rows: [{ current_value: 10 }] }) // getUsage
+        .mockResolvedValueOnce({ rows: [] });                      // getUserPlan → FREE
       const err = await assertLimit(FREE_UUID, 'medicines_count').catch((e) => e);
       expect(err).toBeInstanceOf(UsageLimitError);
       expect(err.statusCode).toBe(429);
@@ -420,7 +427,7 @@ describe('UsageLimitService', () => {
 
     test('PREMIUM user: increments past FREE limit without error', async () => {
       mockQuery
-        .mockResolvedValueOnce({ rows: [makeActiveSub('PREMIUM')] }) // getPlanLimit
+        .mockResolvedValueOnce({ rows: [makeActiveSub('PREMIUM')] }) // getPlanLimit → getUserPlan
         .mockResolvedValueOnce({ rows: [{ current_value: 15 }] });   // INSERT RETURNING
       const newVal = await incrementUsage(PREMIUM_UUID, 'medicines_count');
       expect(newVal).toBe(15);
@@ -435,6 +442,7 @@ describe('UsageLimitService', () => {
 
     test('floors at 0 (no negative counters)', async () => {
       // GREATEST(..., 0) in SQL ensures this; verify the SQL contains GREATEST
+      mockQuery.mockResolvedValueOnce({ rows: [{ current_value: 0 }] });
       await decrementUsage(FREE_UUID, 'medicines_count');
       const sql = mockQuery.mock.calls[0][0] as string;
       expect(sql).toContain('GREATEST');
@@ -455,9 +463,10 @@ describe('featureGuard and usageGuard (HTTP layer)', () => {
     // Register a test route that uses both guards
     app.post('/test/gated-feature', {
       preHandler: [
-        async (req: FastifyRequest & { user?: { id: string } }, reply) => {
-          (req as FastifyRequest & { user: { id: string } }).user = {
+        async (req: FastifyRequest & { user?: { id: string } }, _reply) => {
+          (req as FastifyRequest & { user: { id: string; phone: string } }).user = {
             id: (req.query as Record<string, string>).uid,
+            phone: '+910000000000',
           };
         },
         (await import('../src/middleware/featureGuard')).requireFeature('caregiver_access'),
@@ -466,9 +475,10 @@ describe('featureGuard and usageGuard (HTTP layer)', () => {
 
     app.post('/test/limited-route', {
       preHandler: [
-        async (req: FastifyRequest & { user?: { id: string } }, reply) => {
-          (req as FastifyRequest & { user: { id: string } }).user = {
+        async (req: FastifyRequest & { user?: { id: string } }, _reply) => {
+          (req as FastifyRequest & { user: { id: string; phone: string } }).user = {
             id: (req.query as Record<string, string>).uid,
+            phone: '+910000000000',
           };
         },
         (await import('../src/middleware/usageGuard')).enforceLimit('medicines_count'),
@@ -503,8 +513,9 @@ describe('featureGuard and usageGuard (HTTP layer)', () => {
 
   test('FREE user blocked (429) by usage guard at medicines_count limit', async () => {
     mockQuery
-      .mockResolvedValueOnce({ rows: [] })                         // getUserPlan
-      .mockResolvedValueOnce({ rows: [{ current_value: 10 }] });  // getUsage
+      .mockResolvedValueOnce({ rows: [{ current_value: 10 }] })  // getUsage
+      .mockResolvedValueOnce({ rows: [] })                         // getUserPlan → FREE
+      .mockResolvedValueOnce({ rows: [] });                        // getUserPlan for error msg
 
     const res = await app.inject({
       method: 'POST',
@@ -571,7 +582,8 @@ describe('POST /v1/billing/webhook/:provider', () => {
     const res = await app.inject({
       method: 'POST',
       url: '/v1/billing/webhook/UNKNOWN_PROVIDER',
-      payload: Buffer.from('{}'),
+      headers: { 'content-type': 'application/json' },
+      payload: '{}',
     });
     expect(res.statusCode).toBe(404);
   });

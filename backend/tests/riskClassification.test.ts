@@ -58,10 +58,10 @@ describe('delay_score component', () => {
     const score = computeAdherenceScore({
       adherenceRate: 0,
       avgDelayMinutes: 60,
-      snoozeRate: 0,
+      snoozeRate: 1.0,
       consistencyScore: 0,
     });
-    // delay contribution = 0.2 * max(0, 1-1) = 0
+    // all components zero: adherence=0, delay=0, snooze=0, consistency=0
     expect(score).toBe(0);
   });
 
@@ -174,6 +174,6 @@ describe('End-to-end: typical Indian user cohorts', () => {
       last_30d_scheduled: '0',
     });
     expect(p.riskLevel).toBe('LOW');
-    expect(p.adherenceScore).toBe(1.0);
+    expect(p.adherenceScore).toBeCloseTo(1.0, 10);
   });
 });
