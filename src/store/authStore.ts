@@ -47,6 +47,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   sendOtp: async (phone: string) => {
     set({ status: 'sending_otp', error: null, phone });
     try {
+      // Force reCAPTCHA fallback — Play Integrity fails on emulators
+      auth().settings.forceRecaptchaFlowForTesting = __DEV__;
       const confirmation = await auth().signInWithPhoneNumber(phone);
       set({ status: 'awaiting_otp', _confirmation: confirmation });
     } catch (err: unknown) {

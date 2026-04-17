@@ -6,6 +6,8 @@ import {
   StyleSheet,
   TouchableOpacity,
   Alert,
+  Linking,
+  Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
@@ -27,6 +29,17 @@ export function ProfileScreen() {
       { text: 'Sign out', style: 'destructive', onPress: logout },
     ]);
   };
+
+  const openNotificationSettings = () => {
+    if (Platform.OS === 'android') {
+      Linking.openSettings();
+    } else {
+      Linking.openURL('app-settings:');
+    }
+  };
+
+  const PRIVACY_URL = 'https://meditrack.app/privacy';
+  const TERMS_URL = 'https://meditrack.app/terms';
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -58,13 +71,13 @@ export function ProfileScreen() {
 
         {/* Settings */}
         <Card>
-          <SettingRow label="Notifications" icon="🔔" onPress={() => {}} />
+          <SettingRow label="Notifications" icon="🔔" onPress={openNotificationSettings} />
           <Divider />
           <SettingRow label="Timezone" icon="🌍" value={Intl.DateTimeFormat().resolvedOptions().timeZone} />
           <Divider />
-          <SettingRow label="Privacy Policy" icon="🔒" onPress={() => {}} />
+          <SettingRow label="Privacy Policy" icon="🔒" onPress={() => Linking.openURL(PRIVACY_URL)} />
           <Divider />
-          <SettingRow label="Terms of Service" icon="📄" onPress={() => {}} />
+          <SettingRow label="Terms of Service" icon="📄" onPress={() => Linking.openURL(TERMS_URL)} />
         </Card>
 
         <Button label="Sign Out" onPress={handleLogout} variant="danger" />

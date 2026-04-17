@@ -5,6 +5,7 @@
  * before AppRegistry.registerComponent so they are available when the app
  * is launched in the background (e.g. notification action, boot complete).
  */
+import 'react-native-get-random-values'; // Polyfill crypto.getRandomValues for uuid
 import { AppRegistry } from 'react-native';
 import { registerBackgroundHandler } from './src/services/notifications/NotificationService';
 
