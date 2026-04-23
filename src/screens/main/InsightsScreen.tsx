@@ -22,6 +22,8 @@ export function InsightsScreen() {
     try {
       const profile = await adherenceApi.profile();
       setAdherenceProfile(profile);
+    } catch {
+      // API not reachable or no data yet — show empty state
     } finally {
       setLoadingDoses(false);
     }
@@ -88,7 +90,7 @@ export function InsightsScreen() {
         {/* Tips */}
         {p && p.riskLevel !== 'LOW' && (
           <Card style={styles.tipCard}>
-            <Text style={styles.tipTitle}>💡 Tip</Text>
+            <Text style={styles.tipTitle}>Tip</Text>
             <Text style={styles.tipText}>
               {p.riskLevel === 'HIGH'
                 ? 'Your adherence is low. Try setting reminders earlier or asking a caregiver to help.'

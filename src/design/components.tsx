@@ -9,6 +9,7 @@ import {
   TextStyle,
 } from 'react-native';
 import { Colors, Spacing, Radii, FontSize, FontWeight, Shadow } from './tokens';
+import { Icon, IconName } from './icons';
 
 // =============================================================================
 // Shared UI primitives used across all screens.
@@ -114,7 +115,7 @@ export function SectionHeader({ title, action, onAction }: SectionHeaderProps) {
 // ── EmptyState ────────────────────────────────────────────────────────────────
 
 interface EmptyStateProps {
-  icon: string;
+  icon: IconName;
   title: string;
   subtitle?: string;
   actionLabel?: string;
@@ -124,7 +125,9 @@ interface EmptyStateProps {
 export function EmptyState({ icon, title, subtitle, actionLabel, onAction }: EmptyStateProps) {
   return (
     <View style={styles.emptyState}>
-      <Text style={styles.emptyIcon}>{icon}</Text>
+      <View style={styles.emptyIcon}>
+        <Icon name={icon} size={48} color={Colors.textTertiary} />
+      </View>
       <Text style={styles.emptyTitle}>{title}</Text>
       {subtitle ? <Text style={styles.emptySubtitle}>{subtitle}</Text> : null}
       {actionLabel && onAction ? (
@@ -214,7 +217,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: Spacing.xxl,
   },
-  emptyIcon:     { fontSize: 48, marginBottom: Spacing.md },
+  emptyIcon:     { marginBottom: Spacing.md, alignItems: 'center' as const },
   emptyTitle:    { fontSize: FontSize.xl, fontWeight: FontWeight.bold, color: Colors.textPrimary, textAlign: 'center' },
   emptySubtitle: { fontSize: FontSize.md, color: Colors.textSecondary, textAlign: 'center', marginTop: Spacing.sm },
   emptyAction:   { marginTop: Spacing.lg, paddingHorizontal: Spacing.xl },

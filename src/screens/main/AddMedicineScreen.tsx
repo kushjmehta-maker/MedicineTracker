@@ -13,6 +13,7 @@ import { medicinesApi } from '../../api/client';
 import { useMedicineStore } from '../../store/medicineStore';
 import { Button, Label, Card } from '../../design/components';
 import { Colors, Spacing, FontSize, FontWeight, Radii } from '../../design/tokens';
+import { Icon, MEDICINE_ICONS, IconName } from '../../design/icons';
 import type { Medicine } from '../../store/medicineStore';
 
 const FREQ_OPTIONS: Array<{ value: Medicine['frequencyType']; label: string }> = [
@@ -22,7 +23,6 @@ const FREQ_OPTIONS: Array<{ value: Medicine['frequencyType']; label: string }> =
   { value: 'AS_NEEDED',      label: 'As needed' },
 ];
 
-const PRESET_ICONS = ['💊', '🩺', '💉', '🧴', '🌡️', '🫀', '🧬', '🌿'];
 const PRESET_COLORS = [
   '#4A90D9', '#34C759', '#FF9500', '#FF3B30',
   '#AF52DE', '#FF2D55', '#5AC8FA', '#FFCC00',
@@ -37,7 +37,7 @@ export function AddMedicineScreen() {
   const [unit, setUnit]           = useState('mg');
   const [freq, setFreq]           = useState<Medicine['frequencyType']>('DAILY');
   const [times, setTimes]         = useState<string[]>(['08:00']);
-  const [icon, setIcon]           = useState('💊');
+  const [icon, setIcon]           = useState<IconName>('pill');
   const [color, setColor]         = useState(PRESET_COLORS[0]);
   const [notes, setNotes]         = useState('');
   const [loading, setLoading]     = useState(false);
@@ -157,13 +157,13 @@ export function AddMedicineScreen() {
       <Card style={styles.section}>
         <Label text="Icon" />
         <View style={styles.iconRow}>
-          {PRESET_ICONS.map((ic) => (
+          {MEDICINE_ICONS.map((ic) => (
             <TouchableOpacity
               key={ic}
               style={[styles.iconBtn, icon === ic && styles.iconBtnActive]}
               onPress={() => setIcon(ic)}
             >
-              <Text style={styles.iconBtnText}>{ic}</Text>
+              <Icon name={ic} size={22} color={icon === ic ? Colors.primary : Colors.textSecondary} />
             </TouchableOpacity>
           ))}
         </View>

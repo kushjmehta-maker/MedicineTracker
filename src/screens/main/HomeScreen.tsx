@@ -18,6 +18,7 @@ import {
   EmptyState,
 } from '../../design/components';
 import { Colors, Spacing, FontSize, FontWeight, Radii } from '../../design/tokens';
+import { Icon, EMOJI_TO_ICON } from '../../design/icons';
 import type { TodayDose } from '../../store/medicineStore';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../../navigation/types';
@@ -148,7 +149,7 @@ export function HomeScreen() {
         ListEmptyComponent={
           loadingDoses ? null : (
             <EmptyState
-              icon="✅"
+              icon="check"
               title="All done for today!"
               subtitle="You've taken all your medicines."
             />
@@ -188,7 +189,7 @@ function DoseCard({ dose, onTake, onSkip }: DoseCardProps) {
     <Card style={[styles.doseCard, isDone && styles.doseCardDone]}>
       <View style={styles.doseRow}>
         <View style={[styles.doseIcon, { backgroundColor: dose.color + '22' }]}>
-          <Text style={styles.doseIconText}>{dose.icon}</Text>
+          <Icon name={EMOJI_TO_ICON[dose.icon] || 'pill'} size={22} color={dose.color} />
         </View>
         <View style={styles.doseInfo}>
           <Text style={styles.doseName}>{dose.medicationName}</Text>

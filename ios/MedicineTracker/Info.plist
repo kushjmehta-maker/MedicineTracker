@@ -48,6 +48,21 @@
 	</array>
 	<key>NSUserNotificationsUsageDescription</key>
 	<string>MediTrack uses notifications to remind you to take your medicines on time.</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>app-1-194636846328-ios-fc5a9003e6822c7df6d70d</string>
+			</array>
+		</dict>
+	</array>
+	<key>UIAppFonts</key>
+	<array>
+		<string>MaterialCommunityIcons.ttf</string>
+		<string>Ionicons.ttf</string>
+		<string>FontAwesome.ttf</string>
+	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
 	<key>UIBackgroundModes</key>

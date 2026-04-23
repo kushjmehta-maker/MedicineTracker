@@ -14,6 +14,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useAuthStore } from '../../store/authStore';
 import { Card, Divider, Button } from '../../design/components';
 import { Colors, Spacing, FontSize, FontWeight, Radii } from '../../design/tokens';
+import { Icon, IconName } from '../../design/icons';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../../navigation/types';
 
@@ -47,7 +48,7 @@ export function ProfileScreen() {
         {/* Avatar */}
         <View style={styles.avatarSection}>
           <View style={styles.avatar}>
-            <Text style={styles.avatarText}>👤</Text>
+            <Icon name="account" size={40} color={Colors.primary} />
           </View>
           <Text style={styles.phoneText}>{phone || '—'}</Text>
           <Text style={styles.phoneLabel}>Signed in via phone</Text>
@@ -71,13 +72,13 @@ export function ProfileScreen() {
 
         {/* Settings */}
         <Card>
-          <SettingRow label="Notifications" icon="🔔" onPress={openNotificationSettings} />
+          <SettingRow label="Notifications" icon="bell" onPress={openNotificationSettings} />
           <Divider />
-          <SettingRow label="Timezone" icon="🌍" value={Intl.DateTimeFormat().resolvedOptions().timeZone} />
+          <SettingRow label="Timezone" icon="globe" value={Intl.DateTimeFormat().resolvedOptions().timeZone} />
           <Divider />
-          <SettingRow label="Privacy Policy" icon="🔒" onPress={() => Linking.openURL(PRIVACY_URL)} />
+          <SettingRow label="Privacy Policy" icon="lock" onPress={() => Linking.openURL(PRIVACY_URL)} />
           <Divider />
-          <SettingRow label="Terms of Service" icon="📄" onPress={() => Linking.openURL(TERMS_URL)} />
+          <SettingRow label="Terms of Service" icon="document" onPress={() => Linking.openURL(TERMS_URL)} />
         </Card>
 
         <Button label="Sign Out" onPress={handleLogout} variant="danger" />
@@ -95,13 +96,15 @@ function SettingRow({
   onPress,
 }: {
   label: string;
-  icon: string;
+  icon: IconName;
   value?: string;
   onPress?: () => void;
 }) {
   const inner = (
     <View style={rowStyles.row}>
-      <Text style={rowStyles.icon}>{icon}</Text>
+      <View style={rowStyles.icon}>
+        <Icon name={icon} size={20} color={Colors.textSecondary} />
+      </View>
       <Text style={rowStyles.label}>{label}</Text>
       {value ? (
         <Text style={rowStyles.value}>{value}</Text>
@@ -123,7 +126,7 @@ function SettingRow({
 
 const rowStyles = StyleSheet.create({
   row:     { flexDirection: 'row', alignItems: 'center', paddingVertical: Spacing.sm, gap: Spacing.sm },
-  icon:    { fontSize: 20, width: 28, textAlign: 'center' },
+  icon:    { width: 28, alignItems: 'center' as const },
   label:   { flex: 1, fontSize: FontSize.md, color: Colors.textPrimary },
   value:   { fontSize: FontSize.sm, color: Colors.textTertiary },
   chevron: { fontSize: FontSize.xl, color: Colors.textTertiary },

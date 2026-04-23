@@ -10,12 +10,13 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Card, SectionHeader } from '../../design/components';
 import { Colors, Spacing, FontSize, FontWeight, Radii } from '../../design/tokens';
+import { Icon, IconName } from '../../design/icons';
 
-const CARE_LINKS = [
-  { icon: '🩺', title: 'Find a doctor',    subtitle: 'Search nearby physicians', url: 'https://www.zocdoc.com' },
-  { icon: '💬', title: 'Ask a pharmacist', subtitle: 'Chat with a licensed pharmacist', url: 'https://www.pharmacychecker.com' },
-  { icon: '📋', title: 'My health records', subtitle: 'View & share your records', url: null },
-  { icon: '🚑', title: 'Emergency SOS',    subtitle: 'Dial 911 immediately', url: 'tel:911' },
+const CARE_LINKS: Array<{ icon: IconName; title: string; subtitle: string; url: string | null }> = [
+  { icon: 'stethoscope', title: 'Find a doctor',    subtitle: 'Search nearby physicians', url: 'https://www.zocdoc.com' },
+  { icon: 'pill',        title: 'Ask a pharmacist', subtitle: 'Chat with a licensed pharmacist', url: 'https://www.pharmacychecker.com' },
+  { icon: 'document',    title: 'My health records', subtitle: 'View & share your records', url: null },
+  { icon: 'heart',       title: 'Emergency SOS',    subtitle: 'Dial 911 immediately', url: 'tel:911' },
 ];
 
 export function CareScreen() {
@@ -25,7 +26,7 @@ export function CareScreen() {
         <SectionHeader title="Care" />
 
         <Card style={styles.bannerCard}>
-          <Text style={styles.bannerIcon}>❤️</Text>
+          <Icon name="heart" size={36} color={Colors.primary} />
           <View>
             <Text style={styles.bannerTitle}>Your health, our priority</Text>
             <Text style={styles.bannerSub}>
@@ -42,7 +43,7 @@ export function CareScreen() {
             activeOpacity={item.url ? 0.7 : 1}
           >
             <Card style={styles.actionCard}>
-              <Text style={styles.actionIcon}>{item.icon}</Text>
+              <Icon name={item.icon} size={28} color={Colors.primary} />
               <View style={styles.actionInfo}>
                 <Text style={styles.actionTitle}>{item.title}</Text>
                 <Text style={styles.actionSub}>{item.subtitle}</Text>

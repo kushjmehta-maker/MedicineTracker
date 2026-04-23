@@ -23,6 +23,7 @@ import {
 import { useBillingStore } from '../../store/billingStore';
 import { Button } from '../../design/components';
 import { Colors, Spacing, FontSize, FontWeight, Radii } from '../../design/tokens';
+import { Icon } from '../../design/icons';
 import { useNavigation } from '@react-navigation/native';
 
 const PRODUCT_IDS = {
@@ -31,12 +32,12 @@ const PRODUCT_IDS = {
 };
 
 const FEATURES = [
-  '✅ Unlimited medicines',
-  '✅ Advanced adherence analytics',
-  '✅ Doctor follow-up tracking',
-  '✅ Caregiver sharing',
-  '✅ Adaptive smart reminders',
-  '✅ Priority support',
+  { icon: 'check' as const, text: 'Unlimited medicines' },
+  { icon: 'check' as const, text: 'Advanced adherence analytics' },
+  { icon: 'check' as const, text: 'Doctor follow-up tracking' },
+  { icon: 'check' as const, text: 'Caregiver sharing' },
+  { icon: 'check' as const, text: 'Adaptive smart reminders' },
+  { icon: 'check' as const, text: 'Priority support' },
 ];
 
 type Plan = 'monthly' | 'annual';
@@ -120,7 +121,7 @@ export function PaywallScreen() {
     <ScrollView style={styles.scroll} contentContainerStyle={styles.container}>
       {/* Hero */}
       <View style={styles.hero}>
-        <Text style={styles.heroIcon}>⭐</Text>
+        <Icon name="star" size={56} color="#FFB800" />
         <Text style={styles.heroTitle}>Upgrade to Premium</Text>
         <Text style={styles.heroSub}>
           Take control of your health with advanced features designed to maximize adherence.
@@ -130,7 +131,10 @@ export function PaywallScreen() {
       {/* Features */}
       <View style={styles.features}>
         {FEATURES.map((f) => (
-          <Text key={f} style={styles.featureText}>{f}</Text>
+          <View key={f.text} style={styles.featureRow}>
+            <Icon name={f.icon} size={20} color={Colors.success} />
+            <Text style={styles.featureText}>{f.text}</Text>
+          </View>
         ))}
       </View>
 
@@ -190,6 +194,7 @@ const styles = StyleSheet.create({
   heroSub:   { fontSize: FontSize.md, color: Colors.textSecondary, textAlign: 'center', marginTop: Spacing.sm, lineHeight: 22 },
 
   features:    { gap: Spacing.sm, marginBottom: Spacing.xl },
+  featureRow:  { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm },
   featureText: { fontSize: FontSize.md, color: Colors.textPrimary, lineHeight: 24 },
 
   plans: { flexDirection: 'row', gap: Spacing.md, marginBottom: Spacing.lg },
