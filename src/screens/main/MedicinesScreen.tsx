@@ -13,7 +13,7 @@ import { useMedicineStore } from '../../store/medicineStore';
 import { medicinesApi } from '../../api/client';
 import { Card, SectionHeader, EmptyState, Divider } from '../../design/components';
 import { Colors, Spacing, FontSize, FontWeight, Radii } from '../../design/tokens';
-import { Icon, EMOJI_TO_ICON } from '../../design/icons';
+import { Icon, resolveIcon } from '../../design/icons';
 import type { Medicine } from '../../store/medicineStore';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../../navigation/types';
@@ -102,7 +102,7 @@ function MedicineCard({ medicine }: { medicine: Medicine }) {
     <Card style={styles.card}>
       <View style={styles.row}>
         <View style={[styles.icon, { backgroundColor: medicine.color + '22' }]}>
-          <Icon name={EMOJI_TO_ICON[medicine.icon] || 'pill'} size={24} color={medicine.color} />
+          <Icon name={resolveIcon(medicine.icon)} size={24} color={medicine.color} />
         </View>
         <View style={styles.info}>
           <Text style={styles.name}>{medicine.name}</Text>

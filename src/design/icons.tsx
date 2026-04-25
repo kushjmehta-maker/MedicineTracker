@@ -60,6 +60,18 @@ export const EMOJI_TO_ICON: Record<string, IconName> = {
   '\u{1F33F}': 'leaf',          // 🌿
 };
 
+// All valid icon names as a Set for quick lookup
+const ICON_NAMES = new Set<string>(Object.keys(ICON_MAP));
+
+/** Resolve any icon string (emoji OR IconName) to a valid IconName, defaulting to 'pill'. */
+export function resolveIcon(raw: string | undefined | null): IconName {
+  if (!raw) return 'pill';
+  // Already a valid IconName
+  if (ICON_NAMES.has(raw)) return raw as IconName;
+  // Try emoji mapping
+  return EMOJI_TO_ICON[raw] ?? 'pill';
+}
+
 // Medicine preset icons for the picker
 export const MEDICINE_ICONS: IconName[] = [
   'pill', 'stethoscope', 'syringe', 'bottle',

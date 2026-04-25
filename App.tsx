@@ -4,6 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
 
+import RNBootSplash from 'react-native-bootsplash';
 import { notificationEngine } from './src/NotificationEngine';
 import { registerForegroundHandler } from './src/services/notifications/NotificationService';
 import { useAuthStore } from './src/store/authStore';
@@ -63,7 +64,7 @@ export default function App(): React.JSX.Element {
 
   return (
     <SafeAreaProvider>
-      <NavigationContainer>
+      <NavigationContainer onReady={() => RNBootSplash.hide({ fade: true })}>
         <RootNavigator />
       </NavigationContainer>
     </SafeAreaProvider>

@@ -11,6 +11,7 @@ import {
 import { useAuthStore } from '../../store/authStore';
 import { Button } from '../../design/components';
 import { Colors, Spacing, FontSize, FontWeight, Radii } from '../../design/tokens';
+import { Icon } from '../../design/icons';
 import type { AuthScreenProps } from '../../navigation/types';
 
 export function PhoneEntryScreen({ navigation }: AuthScreenProps<'PhoneEntry'>) {
@@ -40,7 +41,7 @@ export function PhoneEntryScreen({ navigation }: AuthScreenProps<'PhoneEntry'>) 
         keyboardShouldPersistTaps="handled"
       >
         <View style={styles.header}>
-          <Text style={styles.logo}>💊</Text>
+          <Icon name="pill" size={64} color={Colors.primary} />
           <Text style={styles.title}>MediTrack</Text>
           <Text style={styles.subtitle}>
             Your personal medicine reminder assistant.{'\n'}Enter your phone number to get started.
@@ -87,7 +88,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   header: { alignItems: 'center', marginBottom: Spacing.xxl },
-  logo:     { fontSize: 64, marginBottom: Spacing.sm },
+  logo:     { marginBottom: Spacing.sm },
   title:    { fontSize: FontSize.xxxl, fontWeight: FontWeight.bold, color: Colors.textPrimary },
   subtitle: { fontSize: FontSize.md, color: Colors.textSecondary, textAlign: 'center', marginTop: Spacing.sm, lineHeight: 22 },
   form: { backgroundColor: Colors.surface, borderRadius: Radii.lg, padding: Spacing.lg },

@@ -1,101 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-  AndroidManifest.xml
-  Complete manifest for Medicine Tracker — includes all permissions and
-  components required for reliable background alarm delivery.
--->
+
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+  <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
-  <!-- ─── Permissions ───────────────────────────────────────────────────── -->
+  <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
 
-  <!-- Required to receive device boot broadcast -->
-  <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+  <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
 
-  <!-- Required for AlarmManager.setExactAndAllowWhileIdle() (Android 12+) -->
-  <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
-  <!-- Alternative for Android 13+ — does not require user approval dialog -->
-  <uses-permission android:name="android.permission.USE_EXACT_ALARM"/>
+  <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
-  <!-- Required for displaying notifications (Android 13+) -->
-  <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+  <uses-permission android:name="android.permission.VIBRATE" />
 
-  <!-- Required for vibration on notification -->
-  <uses-permission android:name="android.permission.VIBRATE"/>
+  <uses-permission android:name="android.permission.WAKE_LOCK" />
 
-  <!-- Required to keep CPU awake during alarm delivery -->
-  <uses-permission android:name="android.permission.WAKE_LOCK"/>
+  <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
 
-  <!-- Required for full-screen notification on lock screen (critical reminders) -->
-  <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT"/>
+  <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+  <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
 
-  <!-- Required to start Foreground Service for boot reschedule -->
-  <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
-  <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE"/>
+  <uses-permission android:name="android.permission.INTERNET" />
+  <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
-  <!-- Internet — required for Firebase Auth, backend sync, and billing -->
-  <uses-permission android:name="android.permission.INTERNET"/>
-  <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-
-  <!-- In-App Purchases (Google Play Billing) -->
-  <uses-permission android:name="com.android.vending.BILLING"/>
+  <uses-permission android:name="com.android.vending.BILLING" />
 
   <application
-      android:name=".MainApplication"
-      android:label="@string/app_name"
-      android:icon="@mipmap/ic_launcher"
-      android:roundIcon="@mipmap/ic_launcher_round"
-      android:allowBackup="false"
-      android:theme="@style/AppTheme"
-      android:usesCleartextTraffic="true">
-
+    android:name=".MainApplication"
+    android:label="@string/app_name"
+    android:icon="@mipmap/ic_launcher"
+    android:roundIcon="@mipmap/ic_launcher_round"
+    android:allowBackup="false"
+    android:theme="@style/AppTheme"
+    android:usesCleartextTraffic="true">
     <activity
-        android:name=".MainActivity"
-        android:label="@string/app_name"
-        android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|screenSize|smallestScreenSize|uiMode"
-        android:launchMode="singleTask"
-        android:windowSoftInputMode="adjustResize"
-        android:showOnLockScreen="true"
-        android:turnScreenOn="true"
-        android:exported="true">
+      android:name=".MainActivity"
+      android:label="@string/app_name"
+      android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|screenSize|smallestScreenSize|uiMode"
+      android:launchMode="singleTask"
+      android:windowSoftInputMode="adjustResize"
+      android:showOnLockScreen="true"
+      android:turnScreenOn="true"
+      android:exported="true"
+      android:theme="@style/BootTheme">
       <intent-filter>
-        <action android:name="android.intent.action.MAIN"/>
-        <category android:name="android.intent.category.LAUNCHER"/>
+        <action android:name="android.intent.action.MAIN" />
+        <category android:name="android.intent.category.LAUNCHER" />
       </intent-filter>
     </activity>
 
-    <!-- ─── Boot Receiver ──────────────────────────────────────────────── -->
-    <!--
-      Receives BOOT_COMPLETED to reschedule all AlarmManager alarms that
-      are cleared on reboot.  This is the entry point for background
-      HeadlessJS reschedule task.
-    -->
     <receiver
-        android:name=".BootReceiver"
-        android:enabled="true"
-        android:exported="true">
+      android:name=".BootReceiver"
+      android:enabled="true"
+      android:exported="true">
       <intent-filter android:priority="999">
-        <action android:name="android.intent.action.BOOT_COMPLETED"/>
-        <action android:name="android.intent.action.QUICKBOOT_POWERON"/>
-        <action android:name="com.htc.intent.action.QUICKBOOT_POWERON"/>
-        <category android:name="android.intent.category.DEFAULT"/>
+        <action android:name="android.intent.action.BOOT_COMPLETED" />
+        <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+        <action android:name="com.htc.intent.action.QUICKBOOT_POWERON" />
+        <category android:name="android.intent.category.DEFAULT" />
       </intent-filter>
     </receiver>
 
-    <!-- ─── Boot Reschedule Foreground Service ─────────────────────────── -->
-    <!--
-      Foreground service required on Android O+ for background JS execution.
-      Displays a low-priority persistent notification while rescheduling.
-    -->
     <service
-        android:name=".BootRescheduleService"
-        android:enabled="true"
-        android:exported="false"
-        android:foregroundServiceType="specialUse">
+      android:name=".BootRescheduleService"
+      android:enabled="true"
+      android:exported="false"
+      android:foregroundServiceType="specialUse">
       <property
-          android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
-          android:value="Reschedule medicine alarms after device reboot"/>
+        android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+        android:value="Reschedule medicine alarms after device reboot" />
     </service>
-
   </application>
-
 </manifest>
