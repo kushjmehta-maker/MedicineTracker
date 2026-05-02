@@ -14,10 +14,10 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace "com.medicinetracker"
+    namespace "com.offside.medicinetracker"
 
     defaultConfig {
-        applicationId "com.medicinetracker"
+        applicationId "com.offside.medicinetracker"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

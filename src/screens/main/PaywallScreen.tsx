@@ -27,8 +27,8 @@ import { Icon } from '../../design/icons';
 import { useNavigation } from '@react-navigation/native';
 
 const PRODUCT_IDS = {
-  monthly: 'com.medicinetracker.premium.monthly',
-  annual:  'com.medicinetracker.premium.annual',
+  monthly: 'com.offside.medicinetracker.premium.monthly',
+  annual:  'com.offside.medicinetracker.premium.annual',
 };
 
 const FEATURES = [

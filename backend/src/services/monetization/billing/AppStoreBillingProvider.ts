@@ -20,10 +20,10 @@ const APPLE_WEBHOOK_SECRET = process.env.APPLE_WEBHOOK_SECRET ?? '';
 
 // Maps App Store product IDs to internal plan types.
 const PRODUCT_TO_PLAN: Record<string, PlanType> = {
-  'com.medicinetracker.premium.monthly': 'PREMIUM',
-  'com.medicinetracker.premium.annual':  'PREMIUM',
-  'com.medicinetracker.family.monthly':  'FAMILY',
-  'com.medicinetracker.family.annual':   'FAMILY',
+  'com.offside.medicinetracker.premium.monthly': 'PREMIUM',
+  'com.offside.medicinetracker.premium.annual':  'PREMIUM',
+  'com.offside.medicinetracker.family.monthly':  'FAMILY',
+  'com.offside.medicinetracker.family.annual':   'FAMILY',
 };
 
 export class AppStoreBillingProvider implements IBillingProvider {
