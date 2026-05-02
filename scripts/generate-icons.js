@@ -60,21 +60,9 @@ function generateMaster() {
   const canvas = createCanvas(S, S);
   const ctx = canvas.getContext('2d');
 
-  // Background with rounded corners
-  const r = S * 0.22; // iOS-style corner radius
-  ctx.beginPath();
-  ctx.moveTo(r, 0);
-  ctx.lineTo(S - r, 0);
-  ctx.quadraticCurveTo(S, 0, S, r);
-  ctx.lineTo(S, S - r);
-  ctx.quadraticCurveTo(S, S, S - r, S);
-  ctx.lineTo(r, S);
-  ctx.quadraticCurveTo(0, S, 0, S - r);
-  ctx.lineTo(0, r);
-  ctx.quadraticCurveTo(0, 0, r, 0);
-  ctx.closePath();
+  // Solid square background — iOS applies its own corner mask
   ctx.fillStyle = BLUE;
-  ctx.fill();
+  ctx.fillRect(0, 0, S, S);
 
   // Draw pill icon centered
   drawPillIcon(ctx, S / 2, S * 0.42, S);
